@@ -24,19 +24,20 @@ export function ImageModal({ onClose }: ImageModalProps) {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 backdrop-blur-[8px] flex items-center justify-center z-50 animate-[fadeIn_0.2s_ease-out]"
       onClick={onClose}
     >
-      <div className="relative max-w-4xl max-h-screen p-4">
+      <div className="relative w-[75%] max-h-[75vh] animate-[scaleIn_0.3s_ease-out]">
         <div className="bg-white p-2 rounded-lg shadow-lg">
-          <div className="h-96 flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <Image
               src="/images/question-image.svg"
               alt="Urban Land Expansion Study"
-              width={800}
-              height={400}
-              className="h-auto w-full object-contain"
+              width={1200}
+              height={800}
+              className="w-full h-auto object-contain"
               priority
+              onClick={onClose} // Allow clicking on the image to close
             />
           </div>
           

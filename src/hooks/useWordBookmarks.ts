@@ -13,47 +13,64 @@ export interface WordBookmark {
   createdAt: number;
 }
 
+// Use fixed timestamps for server-side rendering to avoid hydration mismatch
+const ONE_DAY_MS = 86400000;
+const TWO_DAYS_MS = 172800000;
+
+// Default bookmarks with fixed timestamps for consistent server/client rendering
+const defaultBookmarks: WordBookmark[] = [
+  {
+    id: 'w1',
+    word: 'urban',
+    definition: 'Relating to, situated in, or characteristic of a town or city.',
+    partOfSpeech: 'adjective',
+    etymology: 'From Latin urbanus ("of or pertaining to a city"), from urbs ("city")',
+    createdAt: 1709654400000 // Fixed timestamp instead of Date.now() - ONE_DAY_MS
+  },
+  {
+    id: 'w2',
+    word: 'expansion',
+    definition: 'The action of becoming larger or more extensive.',
+    partOfSpeech: 'noun',
+    etymology: 'From Latin expansio, from expandere ("to spread out")',
+    createdAt: 1709568000000 // Fixed timestamp instead of Date.now() - TWO_DAYS_MS
+  }
+];
+
 export function useWordBookmarks() {
-  const [wordBookmarks, setWordBookmarks] = useState<WordBookmark[]>(() => {
-    const defaultBookmarks: WordBookmark[] = [
-      {
-        id: 'w1',
-        word: 'urban',
-        definition: 'Relating to, situated in, or characteristic of a town or city.',
-        partOfSpeech: 'adjective',
-        etymology: 'From Latin urbanus ("of or pertaining to a city"), from urbs ("city")',
-        createdAt: Date.now() - 86400000 // 1 day ago
-      },
-      {
-        id: 'w2',
-        word: 'expansion',
-        definition: 'The action of becoming larger or more extensive.',
-        partOfSpeech: 'noun',
-        etymology: 'From Latin expansio, from expandere ("to spread out")',
-        createdAt: Date.now() - 172800000 // 2 days ago
-      }
-    ];
+  const [wordBookmarks, setWordBookmarks] = useState<WordBookmark[]>(defaultBookmarks);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-    if (typeof window === 'undefined') return defaultBookmarks;
-
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : defaultBookmarks;
-    } catch {
-      return defaultBookmarks;
-    }
-  });
-
+  // Load saved bookmarks from localStorage only after initial render on client
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(wordBookmarks));
-  }, [wordBookmarks]);
+    if (typeof window !== 'undefined' && !isInitialized) {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          setWordBookmarks(JSON.parse(saved));
+        }
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Error loading word bookmarks from localStorage:', error);
+      }
+    }
+  }, [isInitialized]);
+
+  // Save bookmarks to localStorage only after initialization and when bookmarks change
+  useEffect(() => {
+    if (typeof window !== 'undefined' && isInitialized) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(wordBookmarks));
+    }
+  }, [wordBookmarks, isInitialized]);
 
   const addWordBookmark = (bookmark: Omit<WordBookmark, 'id' | 'createdAt'>) => {
+    // Generate a more deterministic ID based on the word and current time
+    // This is still client-side only, but we've already hydrated by this point
+    const timestamp = Date.now();
     const newBookmark: WordBookmark = {
       ...bookmark,
-      id: `w${Math.random().toString(36).substring(2, 9)}`,
-      createdAt: Date.now()
+      id: `w${timestamp.toString(36)}`,
+      createdAt: timestamp
     };
     
     setWordBookmarks(prev => [newBookmark, ...prev]);

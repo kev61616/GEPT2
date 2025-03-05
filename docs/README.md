@@ -287,6 +287,18 @@ useEffect(() => {
    - Answer change tracking
    - Performance metrics
 
+## Technical Documentation
+
+The following technical documentation is available:
+
+1. [SAT Layout Documentation](./sat-layout.md) - Details on the SAT test-taking UI components
+2. [Toolbar Components](./toolbar-components.md) - Documentation for toolbar components
+3. [Text Markup Toolbar](./text-markup-toolbar.md) - Text highlighting and annotation features
+4. [Word Definition System](./word-definition-system.md) - Implementation of the word definition feature
+5. [Widget Toolbar](./widget-toolbar.md) - Documentation for the widget toolbar
+6. [Draggable Widget System](./draggable-widget-system.md) - Implementation of draggable widgets
+7. [Hydration Error Fixes](./hydration-error-fixes.md) - Solutions for Next.js hydration errors
+
 ## SAT Layout Components
 
 The application now includes SAT layout components migrated from the SAT Screens project. These components provide a comprehensive UI for SAT test-taking experiences.

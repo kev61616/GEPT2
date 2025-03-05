@@ -1,4 +1,4 @@
-'use client';
+  'use client';
 
 import { ChevronRight, Calculator, LogOut, Clock, FileText, Maximize2 } from 'lucide-react';
 import { useLayoutSettings } from '@/contexts/LayoutSettingsContext';

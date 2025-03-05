@@ -132,8 +132,10 @@ export function useWordDefinition() {
     return now - cachedData.timestamp < CACHE_EXPIRATION;
   };
 
-  // Get definition from cache if available
+  // Get definition from cache if available - only called client-side
   const getFromCache = (word: string): WordDefinition | null => {
+    if (typeof window === 'undefined') return null;
+    
     try {
       const cachedData = localStorage.getItem(`word_definition_${word.toLowerCase()}`);
       if (cachedData) {
@@ -151,8 +153,10 @@ export function useWordDefinition() {
     return null;
   };
 
-  // Save definition to cache
+  // Save definition to cache - only called client-side
   const saveToCache = (word: string, def: WordDefinition) => {
+    if (typeof window === 'undefined') return;
+    
     try {
       const cacheData: CachedDefinition = {
         definition: def,
@@ -167,12 +171,15 @@ export function useWordDefinition() {
   const fetchDefinition = async (word: string) => {
     if (!word) return;
     
-    // First check if we have a cached definition
-    const cachedDefinition = getFromCache(word);
-    if (cachedDefinition) {
-      console.log('Using cached definition for:', word);
-      setDefinition(cachedDefinition);
-      return;
+    // Only check cache on the client side after hydration
+    if (typeof window !== 'undefined') {
+      // First check if we have a cached definition
+      const cachedDefinition = getFromCache(word);
+      if (cachedDefinition) {
+        console.log('Using cached definition for:', word);
+        setDefinition(cachedDefinition);
+        return;
+      }
     }
     
     setLoading(true);
@@ -184,11 +191,17 @@ export function useWordDefinition() {
       
       // For development, use mock data
       if (mockDefinitions[normalizedWord]) {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 300));
+        // Simulate API delay - but only on client side
+        if (typeof window !== 'undefined') {
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
         const def = mockDefinitions[normalizedWord];
         setDefinition(def);
-        saveToCache(word, def);
+        
+        // Only cache on client side
+        if (typeof window !== 'undefined') {
+          saveToCache(word, def);
+        }
       } else {
         // In a real implementation, we would fetch from an API
         // const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
@@ -198,7 +211,9 @@ export function useWordDefinition() {
         // saveToCache(word, data[0]);
         
         // For now, return a generic definition for words not in our mock data
-        await new Promise(resolve => setTimeout(resolve, 300));
+        if (typeof window !== 'undefined') {
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
         const genericDef = {
           word: word,
           phonetic: `/ˈ${word}/`,
@@ -218,7 +233,11 @@ export function useWordDefinition() {
           etymology: 'Etymology information would appear here.'
         };
         setDefinition(genericDef);
-        saveToCache(word, genericDef);
+        
+        // Only cache on client side
+        if (typeof window !== 'undefined') {
+          saveToCache(word, genericDef);
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred');

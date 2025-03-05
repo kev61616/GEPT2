@@ -14,16 +14,46 @@ import { WordBookmarkManager } from '@/components/WordBookmarkManager';
 import { sampleQuestion } from '@/data/sampleQuestion';
 import { useQuizState } from '@/hooks/useQuizState';
 import { useState, useRef, useEffect } from 'react';
+import { useSelection } from '@/contexts/SelectionContext';
 
 function QuestionContent() {
   const { state, handleSelectChoice, handleSubmit } = useQuizState();
   const [showModal, setShowModal] = useState(false);
   const [showWordBookmarks, setShowWordBookmarks] = useState(false);
   const { balancePanels } = useLayoutSettings();
+  const { setDoubleClickedWord, setDoubleClickPosition } = useSelection();
   
   // Refs for the panels
   const questionPanelRef = useRef<HTMLDivElement>(null);
   const choicesPanelRef = useRef<HTMLDivElement>(null);
+  
+  // Add a manual double-click handler at the page level
+  useEffect(() => {
+    const handleManualDoubleClick = (e: MouseEvent) => {
+      console.log('Manual double-click handler triggered!');
+      
+      // Force a word definition for testing purposes
+      const testWord = "urban";
+      const position = {
+        top: e.clientY + window.scrollY - 10,
+        left: e.clientX + window.scrollX
+      };
+      
+      console.log('Setting test word:', testWord);
+      console.log('Setting position:', position);
+      
+      setDoubleClickedWord(testWord);
+      setDoubleClickPosition(position);
+    };
+    
+    // Add the event listener directly to the document
+    document.addEventListener('dblclick', handleManualDoubleClick);
+    
+    // Clean up
+    return () => {
+      document.removeEventListener('dblclick', handleManualDoubleClick);
+    };
+  }, [setDoubleClickedWord, setDoubleClickPosition]);
   
   // Handle modal close
   const handleModalClose = (e: React.MouseEvent | KeyboardEvent) => {
@@ -119,7 +149,7 @@ function QuestionContent() {
 
       <div className="bg-white rounded-xl border shadow-sm">
         <QuestionImage onImageClick={() => setShowModal(true)} />
-
+        
         <div className="flex flex-col lg:flex-row">
           <QuestionPanel
             ref={questionPanelRef}

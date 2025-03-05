@@ -15,7 +15,7 @@ import { useQuizState } from '@/hooks/useQuizState';
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const { state, handleSelectChoice, handleSubmit } = useQuizState();
+  const { state, handleSelectChoice, handleSubmit, addStrike } = useQuizState();
   const [showModal, setShowModal] = useState(false);
   const [showTimer, setShowTimer] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
@@ -29,6 +29,9 @@ export default function Home() {
 
   // Listen for widget visibility changes from the widget manager
   useEffect(() => {
+    // Only run this effect on the client side
+    if (typeof window === 'undefined') return;
+    
     const handleWidgetStateChange = () => {
       try {
         const widgetState = localStorage.getItem('widgetState');
@@ -138,6 +141,8 @@ export default function Home() {
                     selectedChoice={state.selectedChoice}
                     onSelectChoice={handleSelectChoice}
                     onSubmit={handleSubmit}
+                    strikes={state.strikes}
+                    onAddStrike={addStrike}
                   />
                 </div>
               </div>

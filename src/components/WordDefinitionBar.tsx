@@ -155,43 +155,90 @@ export function WordDefinitionBar({ word, position, onClose, onShowWordBookmarks
     }
   };
 
+  // Default position for server-side rendering to avoid hydration mismatch
+  const defaultPosition = {
+    top: 200,
+    left: 200
+  };
+  
   // Calculate initial position to ensure the bar stays within viewport
-  // and position it towards the center of the screen
+  // and position it towards the center of the screen, away from the word
   const calculateInitialPosition = () => {
+    // Use default values for server-side rendering
+    if (typeof window === 'undefined') {
+      return defaultPosition;
+    }
+    
     const barWidth = 320; // Approximate width of the bar
-    const barHeight = 300; // Approximate height of the bar
-    const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1000;
-    const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
+    const barHeight = 400; // Approximate height of the bar (increased to account for all content)
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
     const padding = 20; // Padding from window edges
+    
+    // Ensure position values are valid numbers
+    const wordLeft = typeof position.left === 'number' && !isNaN(position.left) ? position.left : windowWidth / 2;
+    const wordTop = typeof position.top === 'number' && !isNaN(position.top) ? position.top : windowHeight / 2;
     
     // Calculate center of screen
     const centerX = windowWidth / 2;
     const centerY = windowHeight / 2;
     
     // Calculate vector from word to center
-    const vectorX = centerX - position.left;
-    const vectorY = centerY - position.top;
+    const vectorX = centerX - wordLeft;
+    const vectorY = centerY - wordTop;
     
     // Normalize the vector (make it a unit vector)
-    const magnitude = Math.sqrt(vectorX * vectorX + vectorY * vectorY);
+    // Add a small value to prevent division by zero
+    const magnitude = Math.sqrt(vectorX * vectorX + vectorY * vectorY) || 0.001;
     const normalizedX = vectorX / magnitude;
     const normalizedY = vectorY / magnitude;
     
+    // Minimum distance to move away from the word (to avoid overlap)
+    const minDistance = 100; 
+    
     // Use the normalized vector to position the popup along the path to center
-    // but not all the way to center - about 30% of the way
-    const distanceToTravel = Math.min(magnitude * 0.3, 150); // Cap at 150px or 30% of distance
+    // Move at least minDistance away, and up to 50% of the way to center
+    const distanceToTravel = Math.max(minDistance, Math.min(magnitude * 0.5, 300));
     
     // Calculate position along the path to center
-    let left = position.left + normalizedX * distanceToTravel;
-    let top = position.top + normalizedY * distanceToTravel;
+    let left = wordLeft + normalizedX * distanceToTravel;
+    let top = wordTop + normalizedY * distanceToTravel;
     
     // Adjust to ensure the popup is centered on this point
     left = left - barWidth / 2;
     top = top - barHeight / 2;
     
+    // If the bar would be too close to the top (where toolbars might be),
+    // push it down further
+    const topToolbarHeight = 100; // Approximate height of top toolbars
+    if (top < topToolbarHeight) {
+      top = topToolbarHeight + padding;
+    }
+    
     // Final boundary checks to ensure the popup stays within the viewport
     left = Math.max(padding, Math.min(left, windowWidth - barWidth - padding));
     top = Math.max(padding, Math.min(top, windowHeight - barHeight - padding));
+    
+    // Additional check to ensure we're not overlapping with the word
+    // If we're still too close to the word horizontally, shift more to center
+    const wordProximityThreshold = 50;
+    const distanceToWord = Math.sqrt(
+      Math.pow(left + barWidth/2 - wordLeft, 2) + 
+      Math.pow(top + barHeight/2 - wordTop, 2)
+    );
+    
+    if (distanceToWord < wordProximityThreshold) {
+      // Move more towards the center
+      left = centerX - barWidth/2;
+      // If we're in the top half of the screen, position in bottom half and vice versa
+      top = wordTop < centerY ? 
+        Math.min(centerY + 50, windowHeight - barHeight - padding) : 
+        Math.max(centerY - barHeight - 50, padding);
+    }
+    
+    // Final check to ensure we don't return NaN values
+    if (isNaN(left)) left = centerX - barWidth/2;
+    if (isNaN(top)) top = centerY - barHeight/2;
     
     return { top, left };
   };
@@ -204,8 +251,20 @@ export function WordDefinitionBar({ word, position, onClose, onShowWordBookmarks
         left: `${popupPosition.left}px`
       };
     }
-    return calculateInitialPosition();
+    
+    // Use default position for initial server-side rendering
+    return {
+      top: `${defaultPosition.top}px`,
+      left: `${defaultPosition.left}px`
+    };
   };
+  
+  // Update position calculation on client-side only
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !popupPosition) {
+      setPopupPosition(calculateInitialPosition());
+    }
+  }, []);
 
   if (loading) {
     return (
