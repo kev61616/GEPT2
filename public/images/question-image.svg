@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#f8fafc" rx="10" ry="10"/>
+  
+  <!-- Chart title -->
+  <text x="400" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#334155">
+    Urban Land Expansion (2000-2020)
+  </text>
+  
+  <!-- X and Y axes -->
+  <line x1="100" y1="320" x2="700" y2="320" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="100" y1="80" x2="100" y2="320" stroke="#94a3b8" stroke-width="2"/>
+  
+  <!-- X-axis labels (years) -->
+  <text x="150" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">2000</text>
+  <text x="250" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">2005</text>
+  <text x="350" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">2010</text>
+  <text x="450" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">2015</text>
+  <text x="550" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">2020</text>
+  <text x="650" y="340" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#64748b">2025</text>
+  
+  <!-- Y-axis labels (km²) -->
+  <text x="80" y="320" font-family="Arial, sans-serif" font-size="12" text-anchor="end" fill="#64748b">0</text>
+  <text x="80" y="260" font-family="Arial, sans-serif" font-size="12" text-anchor="end" fill="#64748b">100</text>
+  <text x="80" y="200" font-family="Arial, sans-serif" font-size="12" text-anchor="end" fill="#64748b">200</text>
+  <text x="80" y="140" font-family="Arial, sans-serif" font-size="12" text-anchor="end" fill="#64748b">300</text>
+  <text x="80" y="80" font-family="Arial, sans-serif" font-size="12" text-anchor="end" fill="#64748b">400</text>
+  
+  <!-- Grid lines -->
+  <line x1="100" y1="260" x2="700" y2="260" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="100" y1="200" x2="700" y2="200" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="100" y1="140" x2="700" y2="140" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,5"/>
+  <line x1="100" y1="80" x2="700" y2="80" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="5,5"/>
+  
+  <!-- Data bars for Region A -->
+  <rect x="130" y="270" width="40" height="50" fill="#3b82f6" opacity="0.8"/>
+  <rect x="230" y="240" width="40" height="80" fill="#3b82f6" opacity="0.8"/>
+  <rect x="330" y="200" width="40" height="120" fill="#3b82f6" opacity="0.8"/>
+  <rect x="430" y="150" width="40" height="170" fill="#3b82f6" opacity="0.8"/>
+  <rect x="530" y="120" width="40" height="200" fill="#3b82f6" opacity="0.8"/>
+  <rect x="630" y="100" width="40" height="220" fill="#3b82f6" opacity="0.8"/>
+  
+  <!-- Data bars for Region B -->
+  <rect x="170" y="290" width="40" height="30" fill="#ef4444" opacity="0.8"/>
+  <rect x="270" y="260" width="40" height="60" fill="#ef4444" opacity="0.8"/>
+  <rect x="370" y="230" width="40" height="90" fill="#ef4444" opacity="0.8"/>
+  <rect x="470" y="190" width="40" height="130" fill="#ef4444" opacity="0.8"/>
+  <rect x="570" y="160" width="40" height="160" fill="#ef4444" opacity="0.8"/>
+  <rect x="670" y="130" width="40" height="190" fill="#ef4444" opacity="0.8"/>
+  
+  <!-- Legend -->
+  <rect x="550" y="50" width="15" height="15" fill="#3b82f6" opacity="0.8"/>
+  <text x="575" y="62" font-family="Arial, sans-serif" font-size="12" fill="#334155">Region A</text>
+  
+  <rect x="650" y="50" width="15" height="15" fill="#ef4444" opacity="0.8"/>
+  <text x="675" y="62" font-family="Arial, sans-serif" font-size="12" fill="#334155">Region B</text>
+  
+  <!-- Y-axis title -->
+  <text x="40" y="200" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#334155" transform="rotate(-90, 40, 200)">
+    Urban Area (km²)
+  </text>
+  
+  <!-- X-axis title -->
+  <text x="400" y="370" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#334155">
+    Year
+  </text>
+</svg>

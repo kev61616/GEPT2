@@ -1,0 +1,74 @@
+/* Breakpoint definitions */
+:root {
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* Mobile styles (below sm breakpoint) */
+@media (max-width: 1023px) {
+  .desktop-widgets {
+    display: none;
+  }
+  
+  .mobile-widgets {
+    display: block;
+  }
+  
+  .mobile-breadcrumb {
+    display: block;
+  }
+  
+  .desktop-breadcrumb {
+    display: none;
+  }
+  
+  .question-progress-full {
+    display: none;
+  }
+  
+  .question-progress-short {
+    display: flex;
+  }
+  
+  .difficulty-text {
+    display: none;
+  }
+}
+
+/* Tablet and desktop styles (lg breakpoint and above) */
+@media (min-width: 1024px) {
+  .desktop-widgets {
+    display: flex;
+  }
+  
+  .mobile-widgets {
+    display: none;
+  }
+  
+  .question-progress-full {
+    display: flex;
+  }
+  
+  .question-progress-short {
+    display: none;
+  }
+  
+  .difficulty-text {
+    display: inline;
+  }
+}
+
+/* Tablet and desktop styles (md breakpoint and above) */
+@media (min-width: 1024px) {
+  .mobile-breadcrumb {
+    display: none;
+  }
+  
+  .desktop-breadcrumb {
+    display: flex;
+  }
+}
